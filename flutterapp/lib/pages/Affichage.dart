@@ -3,71 +3,55 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutterapp/livre.dart';
+import 'package:snippet_coder_utils/ProgressHUD.dart';
 
 class Affichage extends StatefulWidget {
-  const Affichage({ Key? key }) : super(key: key);
+  const Affichage({Key? key}) : super(key: key);
 
   @override
   State<Affichage> createState() => _AffichageState();
 }
 
 class _AffichageState extends State<Affichage> {
-  
-  late Future<List> _bookList;
-  @override 
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _bookList = Livre.getAllLivre();
-  }
+  bool isAPIcallProcess = false;
+  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    if(ModalRoute.of(context)!.settings.arguments != null){
-      Object? arg = ModalRoute.of(context)!.settings.arguments;
-      var newLivre= jsonDecode(arg.toString());
-       setState(() {
-         _bookList = _bookList.then<List>((value) {return [newLivre, ...value];});
-      });
-    }
-     return Scaffold(
-      appBar: AppBar(
-        title: const Text("liste livres"),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.orange,
+        body: ProgressHUD(
+          child: Form(
+            key: globalFormKey,
+            child: _affiche(context),
+          ),
+          inAsyncCall: isAPIcallProcess,
+          opacity: 0.3,
+          key: UniqueKey(),
+        ),
       ),
-      body: Container(
-        child: FutureBuilder<List>(
-          future: _bookList,
-          builder: (context, snapshot){
-            if(snapshot.hasData){
-              return ListView.builder(
-                itemCount: snapshot.data?.length,
-                itemBuilder: (context, i){
-                  return Card(
-                    child: ListTile(
-                      title: Text(snapshot.data![i]['title'], style: const TextStyle(fontSize: 30),),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(snapshot.data![i]['body'], style: const TextStyle(fontSize: 20)),
-                      ]),
-                    ),
-                  );
-                }
-                );
-            }
-            else{
-              return const Center(
-                child: Text("Pas de données"),
-              );
-            }
-          },
-        ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/ajout');
-          },
-          child: const Text("+"),
-      ),  
+    );
+  }
+
+  Widget _affiche(BuildContext context) {
+    return SingleChildScrollView(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: const Image(
+                image: AssetImage('assets/m2l2.jpg'),
+                height: 50,
+                width: 50,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
