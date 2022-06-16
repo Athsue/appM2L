@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,11 +18,12 @@ class Livre {
     }
   }
 
-  static Login(BuildContext context, login, password) async {
+  static Login(BuildContext context, username, password) async {
     try {
-      var connection = {"email": login, "password": password};
-      var res = await http.post(Uri.parse("https://reqres.in/api/login"),
-          body: connection);
+      var apiURL = "http://192.168.56.1:45380/api/auth/login/";
+      var res = await http.post(Uri.parse(apiURL),
+          body: {"username": username, "password": password});
+      log("${res.reasonPhrase}");   
       if (res.statusCode == 200) {
         Navigator.pushNamed(context, '/liste');
       } else {

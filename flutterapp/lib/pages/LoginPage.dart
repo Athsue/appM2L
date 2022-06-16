@@ -14,7 +14,7 @@ class _LoginPageState extends State<LoginPage> {
   bool isAPIcallProcess = false;
   bool hidePassword = true;
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
-  String? email;
+  String? username;
   String? password;
   @override
   Widget build(BuildContext context) {
@@ -74,14 +74,14 @@ class _LoginPageState extends State<LoginPage> {
                       fontSize: 25,
                       color: Colors.white),
                 ))),
-            FormHelper.inputFieldWidget(context, "Email", "Adresse E-Mail",
+            FormHelper.inputFieldWidget(context, "Username", "Username",
                 (onValidateVal) {
               if (onValidateVal.isEmpty) {
-                return "L'adresse E-Mail ne peut être vide";
+                return "L'utilisateur ne peut être vide";
               }
               return null;
             }, (onSaved) {
-              email = onSaved;
+              username = onSaved;
             },
                 borderFocusColor: Colors.white,
                 backgroundColor: Colors.red,
@@ -122,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                 dynamic validate = globalFormKey.currentState?.validate();
                 if (validate != null && validate) {
                   globalFormKey.currentState?.save();
-                  Livre.Login(context, email, password);
+                  Livre.Login(context, username, password);
                 }
               },
                   btnColor: Colors.red,
