@@ -21,8 +21,13 @@ class Livre {
   static Login(BuildContext context, username, password) async {
     try {
       var apiURL = "http://192.168.56.1:45380/api/auth/login/";
+      var connection = {"username": username, "password": password};
+      var bodyEncoded = json.encode(connection);
       var res = await http.post(Uri.parse(apiURL),
-          body: {"username": username, "password": password});
+          body: bodyEncoded, headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },);
       log("${res.reasonPhrase}");   
       if (res.statusCode == 200) {
         Navigator.pushNamed(context, '/liste');
